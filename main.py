@@ -1,4 +1,4 @@
-from fastapi import FastAPI # Framework
+from fastapi import FastAPI, Depends # Framework
 from pydantic import BaseModel
 from typing import List
 
@@ -11,6 +11,10 @@ class Tea(BaseModel):
     
 teas : List[Tea] = []
 
+# ✅ Dependency function to simulate database access
+def get_tea_db():
+    return teas
+
 # Decorators is basically superpowers our functions
 @app.get("/") # Decorators 1
 def read_root():
@@ -18,8 +22,8 @@ def read_root():
 
 
 @app.get("/teas")
-def get_teas():
-    return teas
+def get_teas(tea_db: List[Tea] = Depends(get_tea_db)):
+    return tea_db
 
 @app.post("/teas")
 def add_tea(tea: Tea):
